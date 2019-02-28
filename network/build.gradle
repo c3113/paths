@@ -40,6 +40,15 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    def stetHoVersion = "1.5.0"
+    implementation "com.facebook.stetho:stetho:${stetHoVersion}"
+    implementation "com.facebook.stetho:stetho-okhttp3:${stetHoVersion}"
+    //Gson
+    implementation "com.google.code.gson:gson:2.8.5"
+
+    def pagingKtxVersion = "2.1.0"
+    implementation "androidx.paging:paging-runtime-ktx:$pagingKtxVersion"
 
     // 测试依赖
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
