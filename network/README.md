@@ -1,11 +1,16 @@
-##结构说明##
+结构说明
+========
 
-###api
+api
+----
+
 接口目录，例：
 
 `/api/users/list`
 
-###apiservice
+apiservice
+----------
+
 API接口，例：
 
 ```
@@ -15,14 +20,18 @@ public interface GitHubService {
 }
 ```
 
-###interceptor
+interceptor
+-----------
+
 Retrofit `过滤器`
 
 * HttpLoggingInterceptor：格式化日志输出
 * HeaderParamsInterceptor：添加请求Header，有需求自己动手
 * DynamicUrlInterceptor：动态更换请求Url，一般项目只会用到一个自己服务器的Url。有时需要请求第三方接口，这时需要更换新的请求Url，简单更此类不需要更改，使用方法见：`NetworkPortal`
 
-###util
+util
+----
+工具目录
 
 * ApiResponse：API响应公共类，包含三个实现类：
 	* ApiSuccessResponse ：网络请求成功结果正常
@@ -42,10 +51,12 @@ Retrofit `过滤器`
         	"nickname":"test测试1"
     	},
     	"message":"成功"
-}
+	}
 	```
 	
-###NetworkConstant
+NetworkConstant
+---------------
+
 所有网络可配置参数都在此处：
 
 * 请求配置信息
@@ -53,7 +64,8 @@ Retrofit `过滤器`
 * Message：根据需要修改添加，如需要添加多语言，需要手动调用`initErrorMessage()`方法
 
 
-###NetworkPortal
+NetworkPortal
+-------------
 
 发起请求唯一入口
 
