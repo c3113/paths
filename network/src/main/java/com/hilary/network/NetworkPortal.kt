@@ -85,6 +85,9 @@ fun <T> getService(clazz: Class<T>): T {
     return getService(clazz, "")
 }
 
+/**
+ * 获取动态url Service对象
+ */
 fun <T> getService(clazz: Class<T>, url: String): T {
     NetworkPortal.dynamicUrlInterceptor.host = url
     return when {
