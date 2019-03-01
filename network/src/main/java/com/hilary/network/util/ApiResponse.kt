@@ -32,19 +32,19 @@ import retrofit2.Response
  * API响应使用的公共类。
  * @param <T>   响应对象的类型
  */
-sealed class ApiResponse<R> {
+sealed class ApiResponse<T, R> {
     companion object {
         /**
          * 创建响应失败结果
          */
-        fun <T> create(error: Throwable): ApiErrorResponse<T> {
+        fun <T, R> create(error: Throwable): ApiErrorResponse<T, R> {
             return ApiErrorResponse(error.message ?: "unknown error")
         }
 
         /**
          *
          */
-        fun <T : BaseResponse<*>> create(response: Response<T>): ApiResponse<T> {
+        fun <T : BaseResponse<R>, R> createS(response: Response<T>): ApiResponse<T, R> {
             return if (response.isSuccessful) {
                 val body = response.body()
                 return when {
@@ -68,14 +68,14 @@ sealed class ApiResponse<R> {
 /**
  * API响应结果为正常
  */
-data class ApiSuccessResponse<T>(val body: T): ApiResponse<T>()
+data class ApiSuccessResponse<T, R>(val body: T): ApiResponse<T, R>()
 
 /**
  * API响应结果为空
  */
-class ApiEmptyResponse<T> : ApiResponse<T>()
+class ApiEmptyResponse<T, R> : ApiResponse<T, R>()
 
 /**
  * API响应失败
  */
-data class ApiErrorResponse<T>(val errorMessage: String) : ApiResponse<T>()
+data class ApiErrorResponse<T, R>(val errorMessage: String) : ApiResponse<T, R>()

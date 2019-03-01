@@ -1,10 +1,16 @@
 package com.hilary.network
 
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.hilary.network.NetworkPortal.retrofit
+import com.hilary.network.NetworkPortal.serviceMap
+import com.hilary.network.interceptor.DynamicUrlInterceptor
+import com.hilary.network.interceptor.HeaderParamsInterceptor
 import com.hilary.network.interceptor.HttpLoggingInterceptor
+import com.hilary.network.util.LiveDataCallAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 //  Created by administrator on 2019/2/28.
@@ -32,11 +38,13 @@ import java.util.concurrent.TimeUnit
 //         .............................................
 //                  佛祖镇楼                  BUG辟易
 //
-class NetworkPortal {
+object NetworkPortal {
     /**
      * retrofit实例
      */
-    private lateinit var retrofit: Retrofit
+    internal var retrofit: Retrofit
+    internal val dynamicUrlInterceptor = DynamicUrlInterceptor()
+    internal val serviceMap = TreeMap<String, Any>()
 
     init {
         val builder = OkHttpClient.Builder()
@@ -46,6 +54,10 @@ class NetworkPortal {
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
         // 失败后尝试重新请求
         builder.retryOnConnectionFailure(RETRY_CONNECTION_FAILURE)
+        //添加Header
+        builder.addInterceptor(HeaderParamsInterceptor())
+        //添加动态Url功能
+        builder.addInterceptor(dynamicUrlInterceptor)
 
         if (BuildConfig.DEBUG) {
             //添加Log打印
@@ -57,8 +69,31 @@ class NetworkPortal {
         retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(builder.build())
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+    }
+
+}
+
+/**
+ * 获取默认Service对象
+ */
+@Suppress("unused")
+fun <T> getService(clazz: Class<T>): T {
+    return getService(clazz, "")
+}
+
+fun <T> getService(clazz: Class<T>, url: String): T {
+    NetworkPortal.dynamicUrlInterceptor.host = url
+    return when {
+        url.isNotBlank() -> NetworkPortal.retrofit.create(clazz)
+        serviceMap.containsKey(clazz.simpleName) -> serviceMap[clazz.simpleName] as T
+        else -> {
+            val service = retrofit.create(clazz)
+            serviceMap[clazz.simpleName] = serviceMap
+            service
+        }
     }
 }
