@@ -1,7 +1,6 @@
 package com.hilary.network
 
 import android.content.Context
-import retrofit2.Retrofit
 
 //  Created by administrator on 2019/2/28.
 //  Copyright (c) 2019 paths. All rights reserved.

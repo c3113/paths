@@ -42,9 +42,11 @@ sealed class ApiResponse<T, R> {
         }
 
         /**
-         *
+         * 数据请求成功，根据返回数据，来创建相应的响应Response
+         * 如有特殊需求可以根据code码和内容来做不同的数据分发处理
+         * 如果登录态无效、请求频繁等自定义错误，需要在此添加结果处理
          */
-        fun <T : BaseResponse<R>, R> createS(response: Response<T>): ApiResponse<T, R> {
+        fun <T : BaseResponse<R>, R> create(response: Response<T>): ApiResponse<T, R> {
             return if (response.isSuccessful) {
                 val body = response.body()
                 return when {
